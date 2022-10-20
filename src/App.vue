@@ -12,9 +12,11 @@
       <ProductFilter
         :category-id.sync="filterCategoryId"
         :price-from.sync="filterPriceFrom"
-        :price-to.sync="filterPriceTo" />
+        :price-to.sync="filterPriceTo"
+        :color-id.sync="filterColorId"
+      />
       <section class="catalog">
-        <ProductList :products="products"/>
+        <ProductList :products="products" :filtered-color="filterColorId"/>
         <BasePagination v-model="page" :count="countProducts" :per-page="productsPerPage"/>
       </section>
     </div>
@@ -39,6 +41,7 @@ export default {
       filterPriceFrom: 0,
       filterPriceTo: 0,
       filterCategoryId: 0,
+      filterColorId: 0,
       page: 1,
       productsPerPage: 3,
     };
@@ -59,6 +62,11 @@ export default {
       if (this.filterCategoryId) {
         filteredProducts = filteredProducts.filter(
           (product) => product.categoryId === this.filterCategoryId,
+        );
+      }
+      if (this.filterColorId > 0) {
+        filteredProducts = filteredProducts.filter(
+          (product) => product.color_ids.includes(this.filterColorId),
         );
       }
       return filteredProducts;

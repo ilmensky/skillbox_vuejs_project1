@@ -1,7 +1,7 @@
 <template>
   <ul class="catalog__list">
-    <ProductItem :product="product" :index="index"
-                 v-for="(product, index) in products" :key="product.id"/>
+    <ProductItem :product="product" :index="index" :f-color="filteredColor"
+                 v-for="(product, index) in products" :key="product.id + '_product'"/>
   </ul>
 </template>
 
@@ -13,7 +13,7 @@ export default {
   components: {
     ProductItem,
   },
-  props: ['products'],
+  props: ['products', 'filteredColor'],
 };
 </script>
 

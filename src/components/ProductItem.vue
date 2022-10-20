@@ -15,29 +15,14 @@
             </span>
 
     <ul class="colors colors--black">
-      <li class="colors__item">
-        <label :for="index+'p1'" class="colors__label">
-          <input :id="index+'p1'" checked="" class="colors__radio sr-only" v-model="color"
+      <li class="colors__item" v-for="(c, key) in product.color_ids" :key="key+'_item_c_'+ index">
+        <label :for="c + '_color_' + index" class="colors__label">
+          <input :id="c + '_color_' + index" class="colors__radio sr-only"
+                 :checked="colors[c - 1].checked"
+                 v-model="color"
                  type="radio"
-                 value="#73B6EA">
-          <span class="colors__value" style="background-color: #73B6EA;">
-                  </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label :for="index+'p2'" class="colors__label">
-          <input :id="index+'p2'" class="colors__radio sr-only" type="radio" v-model="color"
-                 value="#8BE000">
-          <span class="colors__value" style="background-color: #8BE000;">
-                  </span>
-        </label>
-      </li>
-      <li class="colors__item">
-        <label :for="index + 'p3'" class="colors__label">
-          <input :id="index + 'p3'" class="colors__radio sr-only" type="radio" v-model="color"
-                 value="#222">
-          <span class="colors__value" style="background-color: #222;">
-                  </span>
+                 :value="colors[c - 1].value">
+          <span class="colors__value" :style="{backgroundColor: colors[c - 1].value}"></span>
         </label>
       </li>
     </ul>
@@ -45,13 +30,35 @@
 </template>
 
 <script>
+import colors from '../data/colors';
+
 export default {
   name: 'ProductItem',
-  props: ['product', 'index'],
+  props: ['product', 'index', 'fColor'],
   data() {
     return {
-      color: '#73B6EA',
+      color: '',
+      fColor2: null,
     };
+  },
+  computed: {
+    colors() {
+      return colors;
+    },
+  },
+  watch: {
+    fColor: {
+      handler(value) {
+        this.fColor2 = value;
+        if (value > 0) {
+          this.color = colors[value - 1].value;
+        } else {
+          this.color = '';
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
   },
 };
 </script>
