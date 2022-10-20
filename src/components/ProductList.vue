@@ -1,6 +1,7 @@
 <template>
   <ul class="catalog__list">
-    <ProductItem :product="product" :index="index" :f-color="filteredColor"
+    <ProductItem @gotoPage="(pageName, pageParams) => $emit('gotoPage', pageName, pageParams)"
+                 :product="product" :index="index" :f-color="filteredColor"
                  v-for="(product, index) in products" :key="product.id + '_product'"/>
   </ul>
 </template>
