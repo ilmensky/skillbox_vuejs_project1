@@ -1,7 +1,7 @@
 <template>
   <li class="catalog__item">
     <a class="catalog__pic" href="#"
-       @click.prevent="$emit('gotoPage', 'product', {id: product.id})">
+       @click.prevent="gotoPage('product', {id: product.id})">
       <img :alt="product.title" :src="product.image">
     </a>
 
@@ -12,7 +12,7 @@
     </h3>
 
     <span class="catalog__price">
-              {{ product.price }} ₽
+              {{ product.price | numberFormat}} ₽
             </span>
 
     <ul class="colors colors--black">
@@ -31,7 +31,9 @@
 </template>
 
 <script>
-import colors from '../data/colors';
+import gotoPage from '@/helpers/gotoPage';
+import colors from '@/data/colors';
+import numberFormat from '@/helpers/numberFormat';
 
 export default {
   name: 'ProductItem',
@@ -41,6 +43,12 @@ export default {
       color: '',
       fColor2: null,
     };
+  },
+  filters: {
+    numberFormat,
+  },
+  methods: {
+    gotoPage,
   },
   computed: {
     colors() {

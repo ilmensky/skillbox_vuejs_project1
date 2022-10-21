@@ -51,8 +51,9 @@
         <legend class="form__legend">Объемб в ГБ</legend>
         <ul class="check-list">
           <li class="check-list__item">
-            <label class="check-list__label">
+            <label class="check-list__label" for="r8">
               <input class="check-list__check sr-only" type="checkbox" name="volume" value="8"
+                     id="r8"
                      checked="">
               <span class="check-list__desc">
                     8
@@ -61,8 +62,9 @@
             </label>
           </li>
           <li class="check-list__item">
-            <label class="check-list__label">
-              <input class="check-list__check sr-only" type="checkbox" name="volume" value="16">
+            <label class="check-list__label" for="r16">
+              <input class="check-list__check sr-only" type="checkbox" name="volume"
+                     id="r16" value="16">
               <span class="check-list__desc">
                     16
                     <span>(461)</span>
@@ -70,8 +72,9 @@
             </label>
           </li>
           <li class="check-list__item">
-            <label class="check-list__label">
-              <input class="check-list__check sr-only" type="checkbox" name="volume" value="32">
+            <label class="check-list__label" for="r32">
+              <input class="check-list__check sr-only" type="checkbox"
+                     id="r32" name="volume" value="32">
               <span class="check-list__desc">
                     32
                     <span>(313)</span>
@@ -79,8 +82,9 @@
             </label>
           </li>
           <li class="check-list__item">
-            <label class="check-list__label">
-              <input class="check-list__check sr-only" type="checkbox" name="volume" value="64">
+            <label class="check-list__label" for="r64">
+              <input class="check-list__check sr-only" type="checkbox" name="volume"
+                     id="r64" value="64">
               <span class="check-list__desc">
                     64
                     <span>(313)</span>
@@ -88,8 +92,9 @@
             </label>
           </li>
           <li class="check-list__item">
-            <label class="check-list__label">
-              <input class="check-list__check sr-only" type="checkbox" name="volume" value="128">
+            <label class="check-list__label" for="r128">
+              <input class="check-list__check sr-only" type="checkbox" name="volume"
+                     id="r128" value="128">
               <span class="check-list__desc">
                     128
                     <span>(313)</span>
@@ -97,8 +102,9 @@
             </label>
           </li>
           <li class="check-list__item">
-            <label class="check-list__label">
-              <input class="check-list__check sr-only" type="checkbox" name="volume" value="264">
+            <label class="check-list__label" for="r264">
+              <input class="check-list__check sr-only" type="checkbox"
+                     id="r264" name="volume" value="264">
               <span class="check-list__desc">
                     264
                     <span>(313)</span>
