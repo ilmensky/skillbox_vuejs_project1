@@ -26,34 +26,9 @@
       <form class="cart__form form" action="#" method="POST">
         <div class="cart__field">
           <ul class="cart__list">
-            <li class="cart__item product"
-                v-for="(item, key) in products" :key="key+'item'">
-              <div class="product__pic">
-                <img :src="item.product.image" width="120" height="120"
-                     :alt="item.product.title">
-              </div>
-              <h3 class="product__title">
-                {{item.product.title}}
-              </h3>
-              <span class="product__code">
-                Артикул: {{item.product.id}}
-              </span>
-
-              <product-counter :amount="item.amount"/>
-              <b class="product__price">
-                {{item.product.price * item.amount | numberFormat}} ₽
-              </b>
-
-              <button class="product__del button-del" type="button"
-                      aria-label="Удалить товар из корзины">
-                <svg width="20" height="20" fill="currentColor">
-                  <use xlink:href="#icon-close"></use>
-                </svg>
-              </button>
-            </li>
+            <cart-item :item="item" v-for="(item, key) in products" :key="key+'item'"/>
           </ul>
         </div>
-
         <div class="cart__block">
           <p class="cart__desc">
             Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
@@ -73,12 +48,12 @@
 
 <script>
 import numberFormat from '@/helpers/numberFormat';
-import productCounter from '@/components/ProductCounter.vue';
 import { mapGetters } from 'vuex';
+import CartItem from '@/components/CartItem.vue';
 
 export default {
   name: 'CartPage',
-  components: { productCounter },
+  components: { CartItem },
   filters: {
     numberFormat,
   },
