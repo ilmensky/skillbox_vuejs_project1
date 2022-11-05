@@ -16,6 +16,11 @@
         :color-id.sync="filterColorId"
       />
       <section class="catalog">
+        <div v-if="productsLoading">Загрузка товаров...</div>
+        <div v-if="productsLoadingFailed">
+          Произошла ошибка при загрузе товаров.
+          <button @click.prevent="loadProducts">Попробовать еще раз.</button>
+        </div>
         <ProductList :products="products" :filtered-color="filterColorId"/>
         <BasePagination v-model="page" :count="countProducts" :per-page="productsPerPage"/>
       </section>
@@ -46,6 +51,8 @@ export default {
       page: 1,
       productsPerPage: 3,
       productsData: null,
+      productsLoading: false,
+      productsLoadingFailed: false,
     };
   },
   computed: {
@@ -63,6 +70,8 @@ export default {
   },
   methods: {
     loadProducts() {
+      this.productsLoading = true;
+      this.productsLoadingFailed = false;
       clearTimeout(this.loadProductsTimer);
       this.loadProductsTimer = setTimeout(() => {
         axios
@@ -78,7 +87,9 @@ export default {
               },
             },
           )
-          .then((response) => { this.productsData = response.data; });
+          .then((response) => { this.productsData = response.data; })
+          .catch(() => { this.productsLoadingFailed = true; })
+          .then(() => { this.productsLoading = false; });
       }, 0);
     },
   },
