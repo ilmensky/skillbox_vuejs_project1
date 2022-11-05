@@ -125,7 +125,8 @@
 </template>
 
 <script>
-import categories from '../data/categories';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 import colors from '../data/colors';
 
 export default {
@@ -142,17 +143,22 @@ export default {
       currentPriceTo: 0,
       currentCategoryId: 0,
       currentColorId: 0,
+      categoriesData: null,
     };
   },
   computed: {
     categories() {
-      return categories;
+      return this.categoriesData ? this.categoriesData.items : [];
     },
     colors() {
       return colors;
     },
   },
   methods: {
+    loadCategories() {
+      axios.get(`${API_BASE_URL}/api/productCategories`)
+        .then((response) => { this.categoriesData = response.data; });
+    },
     submit() {
       this.$emit('update:priceFrom', this.currentPriceFrom);
       this.$emit('update:priceTo', this.currentPriceTo);
@@ -178,6 +184,9 @@ export default {
     colorId(value) {
       this.currentColorId = value;
     },
+  },
+  created() {
+    this.loadCategories();
   },
 };
 </script>
