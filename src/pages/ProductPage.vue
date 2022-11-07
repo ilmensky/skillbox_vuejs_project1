@@ -1,5 +1,7 @@
 <template>
-  <main class="content container">
+  <main class="content container" v-if="productLoading">Загрузка товара...</main>
+  <main class="content container" v-else-if="productLoadingFailed">Не удальсь получить товар.</main>
+  <main class="content container" v-else>
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
@@ -183,8 +185,8 @@
 </template>
 
 <script>
-import products from '@/data/products';
-import categories from '@/data/categories';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
 import ProductCounter from '@/components/ProductCounter.vue';
@@ -195,6 +197,9 @@ export default {
   data() {
     return {
       productAmount: 1,
+      productData: null,
+      productLoading: false,
+      productLoadingFailed: false,
     };
   },
   filters: {
@@ -202,10 +207,10 @@ export default {
   },
   computed: {
     product() {
-      return products.find((product) => product.id === +this.$route.params.id);
+      return { ...this.productData, image: this.productData.image.file.url };
     },
     category() {
-      return categories.find((category) => category.id === this.product.categoryId);
+      return this.product.category;
     },
   },
   methods: {
@@ -215,6 +220,22 @@ export default {
         'addProductToCart',
         { productId: this.product.id, amount: this.productAmount },
       );
+    },
+    loadProduct() {
+      this.productLoading = true;
+      this.productLoadingFailed = false;
+      axios.get(`${API_BASE_URL}/api/products/${this.$route.params.id}`)
+        .then((response) => { this.productData = response.data; })
+        .catch(() => { this.productLoadingFailed = true; })
+        .finally(() => { this.productLoading = false; });
+    },
+  },
+  watch: {
+    $route: {
+      handler() {
+        this.loadProduct();
+      },
+      immediate: true,
     },
   },
 };
