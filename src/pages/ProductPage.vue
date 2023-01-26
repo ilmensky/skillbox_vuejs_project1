@@ -106,12 +106,13 @@
             </fieldset>
 
             <div class="item__row">
-
               <product-counter v-model.number="productAmount"/>
-              <button class="button button--primery" type="submit">
+              <button class="button button--primery" type="submit" :disabled="productAddSending">
                 В корзину
               </button>
             </div>
+            <div v-show="productAdded">Товар добавлен в корзину</div>
+            <div v-show="productAddSending">Добавление товара...</div>
           </form>
         </div>
       </div>
@@ -190,6 +191,7 @@ import { API_BASE_URL } from '@/config';
 import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
 import ProductCounter from '@/components/ProductCounter.vue';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'ProductPage',
@@ -200,6 +202,8 @@ export default {
       productData: null,
       productLoading: false,
       productLoadingFailed: false,
+      productAdded: false,
+      productAddSending: false,
     };
   },
   filters: {
@@ -214,12 +218,19 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['addProductToCart']),
     gotoPage,
     addToCart() {
-      this.$store.commit(
-        'addProductToCart',
-        { productId: this.product.id, amount: this.productAmount },
-      );
+      this.productAddSending = true;
+      this.productAdded = false;
+      this.addProductToCart({
+        productId: this.product.id,
+        quantity: this.productAmount,
+      })
+        .then(() => {
+          this.productAddSending = false;
+          this.productAdded = true;
+        });
     },
     loadProduct() {
       this.productLoading = true;
