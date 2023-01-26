@@ -17,7 +17,7 @@
     </b>
 
     <button class="product__del button-del" type="button"
-            @click.prevent="deleteProduct(item.productId)"
+            @click.prevent="deleteCartProduct(item.productId)"
             aria-label="Удалить товар из корзины">
       <svg width="20" height="20" fill="currentColor">
         <use xlink:href="#icon-close"></use>
@@ -29,7 +29,7 @@
 <script>
 import productCounter from '@/components/ProductCounter.vue';
 import numberFormat from '@/helpers/numberFormat';
-import { mapMutations } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'CartItem',
@@ -37,9 +37,7 @@ export default {
   props: ['item'],
   filters: { numberFormat },
   methods: {
-    ...mapMutations({
-      deleteProduct: 'deleteCartProduct',
-    }),
+    ...mapActions(['updateCartProductAmount', 'deleteCartProduct']),
   },
   computed: {
     amount: {
@@ -47,9 +45,9 @@ export default {
         return this.item.amount;
       },
       set(value) {
-        this.$store.commit('updateCartProductAmount', {
+        this.updateCartProductAmount({
           productId: this.item.productId,
-          amount: value,
+          quantity: value,
         });
       },
     },

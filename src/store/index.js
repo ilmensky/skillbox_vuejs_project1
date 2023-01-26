@@ -12,19 +12,11 @@ export default new Vuex.Store({
     cartProductsData: [],
   },
   mutations: {
-    updateCartProductAmount(state, {
-      productId,
-      amount,
-    }) {
+    updateCartProductAmount(state, { productId, quantity }) {
       const item = state.cartProducts.find((i) => i.productId === productId);
       if (item) {
-        item.amount = amount;
+        item.amount = quantity;
       }
-    },
-    deleteCartProduct(state, productId) {
-      state.cartProducts = state.cartProducts.filter(
-        (item) => item.productId !== productId,
-      );
     },
     updateUserAccessKey(state, accessKey) {
       state.userAccessKey = accessKey;
@@ -76,10 +68,7 @@ export default new Vuex.Store({
           context.commit('syncCartProducts');
         });
     },
-    addProductToCart(context, {
-      productId,
-      quantity,
-    }) {
+    addProductToCart(context, { productId, quantity }) {
       return (new Promise((resolve) => { setTimeout(resolve, 2000); }))
         .then(() => axios
           .post(`${API_BASE_URL}/api/baskets/products`, {
@@ -94,6 +83,44 @@ export default new Vuex.Store({
             context.commit('updateCartProductsData', response.data.items);
             context.commit('syncCartProducts');
           }));
+    },
+    updateCartProductAmount(context, { productId, quantity }) {
+      context.commit('updateCartProductAmount', { productId, quantity });
+
+      if (quantity < 1) {
+        return false;
+      }
+
+      return axios
+        .put(`${API_BASE_URL}/api/baskets/products`, {
+          productId,
+          quantity,
+        }, {
+          params: {
+            userAccessKey: context.state.userAccessKey,
+          },
+        })
+        .then((response) => {
+          context.commit('updateCartProductsData', response.data.items);
+        })
+        .catch(() => {
+          context.commit('syncCartProducts');
+        });
+    },
+    deleteCartProduct(context, productId) {
+      return axios
+        .delete(`${API_BASE_URL}/api/baskets/products`, {
+          params: {
+            userAccessKey: context.state.userAccessKey,
+          },
+          data: {
+            productId,
+          },
+        })
+        .then((response) => {
+          context.commit('updateCartProductsData', response.data.items);
+          context.commit('syncCartProducts');
+        });
     },
   },
 });
