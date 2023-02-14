@@ -28,36 +28,23 @@
     </div>
 
     <section class="cart">
-      <form class="cart__form form" action="#" method="POST">
+      <form class="cart__form form" action="#" method="POST" @submit.prevent="order">
         <div class="cart__field">
           <div class="cart__data">
-            <label class="form__label">
-              <input class="form__input" type="text" name="name"
-                     placeholder="Введите ваше полное имя">
-              <span class="form__value">ФИО</span>
-            </label>
+            <base-form-text :error="formError.name" v-model="formData.name"
+                            placeholder="Введите ваше полное имя" title="ФИО" />
 
-            <label class="form__label">
-              <input class="form__input" type="text" name="address" placeholder="Введите ваш адрес">
-              <span class="form__value">Адрес доставки</span>
-            </label>
+            <base-form-text :error="formError.address" v-model="formData.address"
+                            placeholder="Введите ваш адрес"  title="Адрес доставки" />
 
-            <label class="form__label">
-              <input class="form__input" type="tel" name="phone" placeholder="Введите ваш телефон">
-              <span class="form__value">Телефон</span>
-              <span class="form__error">Неверный формат телефона</span>
-            </label>
+            <base-form-text :error="formError.phone" v-model="formData.phone" type="tel"
+                            placeholder="Введите ваш телефон" title="Телефон" />
 
-            <label class="form__label">
-              <input class="form__input" type="email" name="email" placeholder="Введи ваш Email">
-              <span class="form__value">Email</span>
-            </label>
+            <base-form-text :error="formError.email" v-model="formData.email" type="email"
+                            placeholder="Введи ваш Email" title="Email" />
 
-            <label class="form__label">
-              <textarea class="form__input form__input--area" name="comments"
-                        placeholder="Ваши пожелания"></textarea>
-              <span class="form__value">Комментарий к заказу</span>
-            </label>
+            <base-form-textarea :error="formError.comment" v-model="formData.comment"
+                                placeholder="Ваши пожелания" title="Комментарий к заказу" />
           </div>
 
           <div class="cart__options">
@@ -125,10 +112,10 @@
             Оформить заказ
           </button>
         </div>
-        <div class="cart__error form__error-block">
+        <div class="cart__error form__error-block" v-if="formErrorMessage">
           <h4>Заявка не отправлена!</h4>
           <p>
-            Похоже произошла ошибка. Попробуйте отправить снова или перезагрузите страницу.
+            {{ formErrorMessage }}
           </p>
         </div>
       </form>
@@ -139,11 +126,47 @@
 <script>
 import numberFormat from '@/helpers/numberFormat';
 import { mapGetters } from 'vuex';
+import BaseFormText from '@/components/BaseFormText.vue';
+import BaseFormTextarea from '@/components/BaseFormTextarea.vue';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 
 export default {
   name: 'CartPageOrder',
+  components: { BaseFormTextarea, BaseFormText },
+  data() {
+    return {
+      formData: {},
+      formError: {},
+      formErrorMessage: '',
+    };
+  },
   filters: {
     numberFormat,
+  },
+  methods: {
+    order() {
+      this.formError = {};
+      this.formErrorMessage = '';
+      axios
+        .post(`${API_BASE_URL}/api/orders`, {
+          ...this.formData,
+        }, {
+          params: {
+            userAccessKey: this.$store.state.userAccessKey,
+          },
+        })
+        .then((response) => {
+          this.$store.commit('resetCart');
+          this.formData = {};
+          this.$store.commit('updateOrderInfo', response.data);
+          this.$router.push({ name: 'cartOrderInfo', params: { id: response.data.id } });
+        })
+        .catch((error) => {
+          this.formError = error.response.data.error.request || {};
+          this.formErrorMessage = error.response.data.error.message || '';
+        });
+    },
   },
   computed: {
     ...mapGetters({

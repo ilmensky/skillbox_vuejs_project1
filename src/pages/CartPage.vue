@@ -36,10 +36,9 @@
           <p class="cart__price">
             Итого: <span>{{totalPrice | numberFormat}} ₽</span>
           </p>
-          <router-link :to="{name: 'cartOrder'}">
-            <button class="cart__button button button--primery">
-              Оформить заказ
-            </button>
+          <router-link :to="{name: 'cartOrder'}"
+                       tag="button" class="cart__button button button--primery" type="submit">
+            Оформить заказ
           </router-link>
         </div>
       </form>
